@@ -21,7 +21,7 @@ const ProductView = async ({ params }: ProductViewProps) => {
           <input
             type='text'
             className='input input-bordered w-full'
-            value={product.name}
+            value={product?.name}
             readOnly={true}
           />
         </div>
@@ -53,7 +53,7 @@ const ProductView = async ({ params }: ProductViewProps) => {
         </div>
 
         <div className='mb-4 col-span-2'>
-          <HomeButton />
+          <HomeButton name='' />
         </div>
       </div>
     </main>
