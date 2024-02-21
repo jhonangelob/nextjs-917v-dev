@@ -1,10 +1,13 @@
 'use client'
 
 import { IProduct } from '@/app/Models/ProductModel'
-import { BiInfoCircle, BiSolidTrash } from 'react-icons/bi'
+import { BiInfoCircle } from 'react-icons/bi'
 import { deleteProduct } from '@/app/Helpers/Products'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import Image from 'next/image'
+import CartButton from './CartButton'
+import { useCartStore } from '../store/useCart'
 
 interface ProductRowProps {
   product: IProduct
@@ -16,15 +19,25 @@ const ProductRow: React.FC<ProductRowProps> = ({
   removeOptimisticProduct,
 }) => {
   const router = useRouter()
-  const handleViewProduct = (product_id) => {
+  const handleViewProduct = (product_id: number) => {
     router.push(`/products/${product_id}`)
   }
+  const { cart, addToCart } = useCartStore()
 
-  const handleDeleteProduct = async (product_id) => {
+  const handleDeleteProduct = async (product_id: number) => {
     removeOptimisticProduct(product_id)
 
     // Directus: Product Delete
     await deleteProduct(product_id)
+  }
+
+  const handleAddtoCart = (product: IProduct) => {
+    addToCart(product)
+  }
+
+  const itemIsAlreadyInCart = (product: IProduct) => {
+    const { id } = product
+    return cart.some((item) => item.id === id)
   }
 
   return (
@@ -32,8 +45,14 @@ const ProductRow: React.FC<ProductRowProps> = ({
       <td></td>
       <td>
         <div className='avatar'>
-          <div className='w-24 rounded-xl'>
-            <img src={product.image} alt={product.image} />
+          <div className='w-24 h-24 rounded-xl'>
+            <Image
+              src={product.image}
+              alt={product.image}
+              width={240}
+              height={240}
+              quality={100}
+            />
           </div>
         </div>
       </td>
@@ -48,6 +67,10 @@ const ProductRow: React.FC<ProductRowProps> = ({
           >
             <BiInfoCircle size='2rem' />
           </button>
+          <CartButton
+            onClick={() => handleAddtoCart(product)}
+            disabled={itemIsAlreadyInCart(product)}
+          />
         </div>
       </td>
     </tr>
