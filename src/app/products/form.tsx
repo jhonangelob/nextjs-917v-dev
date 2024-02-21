@@ -2,10 +2,10 @@
 
 import { useFormState } from 'react-dom'
 import { StandardResponse } from '@/app/Helpers/Responses'
-import { useEffect, useRef } from 'react'
-import addProduct from '@/app/actions/products'
+import { useRef } from 'react'
 import { SubmitProductButton } from '@/app/products/SubmitProductButton'
 import { Toaster } from '../Components/Toaster'
+import addProduct from '../Actions/products'
 
 const initialState: StandardResponse = {
   success: false,
@@ -14,10 +14,6 @@ const initialState: StandardResponse = {
 export default function ProductForm() {
   const ref = useRef(null)
   const [state, formAction] = useFormState(addProduct, initialState)
-
-  useEffect(() => {
-    if (state.success) ref.current?.reset()
-  })
 
   return (
     <form
